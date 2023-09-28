@@ -7,7 +7,10 @@
   outputs = inputs: let
     matrix = [
       # ogmiosRef ogmiosHash nodeRef nodeHash
-      [ "v6.0.0-rc2" "sha256-UWw+sOn6k2iwpRanz2XwuEmrM7pjyuGXn1FU0NSUgCQ=" "8.3.1-pre" "sha256-64Nc6CKSMe4SoOu1zaqP9XekWWMDsTVRAJ5faEvbkb4=" ]
+      [ "v6.0.0-rc2" "sha256-UWw+sOn6k2iwpRanz2XwuEmrM7pjyuGXn1FU0NSUgCQ="
+        "8.3.1-pre" "sha256-64Nc6CKSMe4SoOu1zaqP9XekWWMDsTVRAJ5faEvbkb4=" ]
+      [ "f40a8921906fecae4c52ffff34fb011457f9a771" "sha256-lNe0uK/fH18om8mhMx9jZ2zAQT47u5zNtjU+ZXoUzBY="
+        "8.1.2" "sha256-d0V8N+y/OarYv6GQycGXnbPly7GeJRBEeE1017qj9eI=" ]
     ];
     supportedSystems = [ "x86_64-linux" /*"aarch64-linux"*/ ];
     inherit (inputs.nixpkgs-2305) lib;
@@ -63,14 +66,16 @@
                 ++ (if pkgs ? libblst then [pkgs.libblst] else [])) ];
             }) ];
           };
+
+          shorten = ref: lib.substring 0 15 ref;
         in
           [
             {
-              name = "ogmios-${ogmiosRef}-node-${nodeRef}";
+              name = "ogmios-${shorten ogmiosRef}-node-${shorten nodeRef}";
               value = ogmiosProject.hsPkgs.ogmios.components.exes.ogmios;
             }
             {
-              name = "ogmios-${ogmiosRef}-node-${nodeRef}-static";
+              name = "ogmios-${shorten ogmiosRef}-node-${shorten nodeRef}-static";
               value = ogmiosProject.projectCross.${{
                 x86_64-linux = "musl64";
                 aarch64-linux = "aarch64-multiplatform-musl";
