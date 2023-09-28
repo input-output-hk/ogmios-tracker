@@ -35,7 +35,7 @@
           };
 
           ogmiosPatched = pkgs.runCommandNoCC "ogmios-src" {} ''
-            cp -r ${./ogmios-src} $out
+            cp -r ${ogmiosSrc} $out
             chmod -R +w $out
             find $out -name cabal.project.freeze -delete -o -name package.yaml -delete
             grep -RF -- -external-libsodium-vrf $out | cut -d: -f1 | sort --uniq | xargs -n1 -- sed -r s/-external-libsodium-vrf//g -i
@@ -56,7 +56,7 @@
             compiler-nix-name = "ghc8107";
             projectFileName = "cabal.project";
             inputMap = { "https://input-output-hk.github.io/cardano-haskell-packages" = nodeFlake.inputs.CHaP; };
-            src = ogmiosSrc + "/server";
+            src = ogmiosPatched + "/server";
             modules = [ ({ lib, pkgs, ... }: {
               packages.cardano-crypto-praos.components.library.pkgconfig = lib.mkForce [ [ pkgs.libsodium-vrf ] ];
               packages.cardano-crypto-class.components.library.pkgconfig = lib.mkForce [ ([ pkgs.libsodium-vrf pkgs.secp256k1 ]
