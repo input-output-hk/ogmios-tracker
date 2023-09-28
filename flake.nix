@@ -71,7 +71,10 @@
             }
             {
               name = "ogmios-${ogmiosRef}-node-${nodeRef}-static";
-              value = ogmiosProject.projectCross.musl64.hsPkgs.ogmios.components.exes.ogmios;
+              value = ogmiosProject.projectCross.${{
+                x86_64-linux = "musl64";
+                aarch64-linux = "aarch64-multiplatform-musl";
+              }.${system}}.hsPkgs.ogmios.components.exes.ogmios;
             }
           ]
       ) matrix)
