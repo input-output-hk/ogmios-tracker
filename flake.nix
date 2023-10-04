@@ -8,6 +8,7 @@
     matrix = [
       # ogmiosRef                                   ogmiosHash                                             nodeRef      nodeHash
       [ "v5.6.0"                                    "sha256-7Hb/ZaEnnMSOPhRlx4YR+cgpZOttYEJNzHBl+RamlZM="  "1.35.5"     "sha256-LwoQejDDA9P7dbl8z3nFbEJDDim0Y7oHUOgf4EH2Xig=" ]
+      [ "v6.0.0"                                    "sha256-Ikun65xEiChdd6TMC3RYqjRj+w1Lcz1jRMT5W1lm9h0="  "8.1.2"      "sha256-d0V8N+y/OarYv6GQycGXnbPly7GeJRBEeE1017qj9eI=" ]
       [ "f40a8921906fecae4c52ffff34fb011457f9a771"  "sha256-lNe0uK/fH18om8mhMx9jZ2zAQT47u5zNtjU+ZXoUzBY="  "8.1.2"      "sha256-d0V8N+y/OarYv6GQycGXnbPly7GeJRBEeE1017qj9eI=" ]
       [ "f40a8921906fecae4c52ffff34fb011457f9a771"  "sha256-lNe0uK/fH18om8mhMx9jZ2zAQT47u5zNtjU+ZXoUzBY="  "8.3.1-pre"  "sha256-64Nc6CKSMe4SoOu1zaqP9XekWWMDsTVRAJ5faEvbkb4=" ]
       [ "v6.0.0-rc2"                                "sha256-UWw+sOn6k2iwpRanz2XwuEmrM7pjyuGXn1FU0NSUgCQ="  "8.3.1-pre"  "sha256-64Nc6CKSMe4SoOu1zaqP9XekWWMDsTVRAJ5faEvbkb4=" ]
