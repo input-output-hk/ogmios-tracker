@@ -7,13 +7,6 @@
   outputs = inputs: let
     matrix = [
       # ogmiosRef                                   ogmiosHash                                             nodeRef      nodeHash
-      [ "v5.6.0"                                    "sha256-7Hb/ZaEnnMSOPhRlx4YR+cgpZOttYEJNzHBl+RamlZM="  "1.35.5"     "sha256-LwoQejDDA9P7dbl8z3nFbEJDDim0Y7oHUOgf4EH2Xig=" ]
-      [ "v6.0.0"                                    "sha256-Ikun65xEiChdd6TMC3RYqjRj+w1Lcz1jRMT5W1lm9h0="  "8.1.2"      "sha256-d0V8N+y/OarYv6GQycGXnbPly7GeJRBEeE1017qj9eI=" ]
-      [ "f40a8921906fecae4c52ffff34fb011457f9a771"  "sha256-lNe0uK/fH18om8mhMx9jZ2zAQT47u5zNtjU+ZXoUzBY="  "8.1.2"      "sha256-d0V8N+y/OarYv6GQycGXnbPly7GeJRBEeE1017qj9eI=" ]
-      [ "f40a8921906fecae4c52ffff34fb011457f9a771"  "sha256-lNe0uK/fH18om8mhMx9jZ2zAQT47u5zNtjU+ZXoUzBY="  "8.3.1-pre"  "sha256-64Nc6CKSMe4SoOu1zaqP9XekWWMDsTVRAJ5faEvbkb4=" ]
-      [ "v6.0.0-rc2"                                "sha256-UWw+sOn6k2iwpRanz2XwuEmrM7pjyuGXn1FU0NSUgCQ="  "8.3.1-pre"  "sha256-64Nc6CKSMe4SoOu1zaqP9XekWWMDsTVRAJ5faEvbkb4=" ]
-      [ "f40a8921906fecae4c52ffff34fb011457f9a771"  "sha256-lNe0uK/fH18om8mhMx9jZ2zAQT47u5zNtjU+ZXoUzBY="  "8.4.0-pre"  "sha256-aOedRHY27/Iq+tMuA5DMbqySj2BORRaFWRdPhaajExs=" ]
-      [ "2b3370b53384a992a0f81795946d94fc7ce210b9"  "sha256-11WcsfT+DGx+nUmcSBNFWqLciUiIO+h5CH18wM4BBA8="  "8.5.0-pre"  "sha256-ONCnN1fLtYJB9kXDlUbF6nIjTnlqvI7kfppftrOOWAY=" ]
       [ "v6.0.0-rc3"                                "sha256-d7mPDogaA1zkeYhoUSD95Mv0HPVfJFS4jWU4q7l/KTs="  "8.5.0-pre"  "sha256-ONCnN1fLtYJB9kXDlUbF6nIjTnlqvI7kfppftrOOWAY=" ]
     ];
     supportedSystems = [ "x86_64-linux" /*"aarch64-linux"*/ ];
@@ -68,6 +61,56 @@
               packages.cardano-crypto-praos.components.library.pkgconfig = lib.mkForce [ [ pkgs.libsodium-vrf ] ];
               packages.cardano-crypto-class.components.library.pkgconfig = lib.mkForce [ ([ pkgs.libsodium-vrf pkgs.secp256k1 ]
                 ++ (if pkgs ? libblst then [pkgs.libblst] else [])) ];
+
+              packages.bech32.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.bech32-th.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.byron-spec-chain.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.byron-spec-ledger.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-binary.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-crypto.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-crypto-test.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-crypto-tests.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-crypto-wrapper.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-data.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-allegra.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-alonzo.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-alonzo-test.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-api.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-babbage.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-babbage-test.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-binary.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-byron.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-byron-test.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-conway.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-conway-test.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-core.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-mary.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-pretty.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-shelley.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-shelley-ma-test.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-ledger-shelley-test.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-prelude.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-prelude-test.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-protocol-tpraos.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-slotting.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.cardano-strict-containers.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.fast-bech32.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ogmios.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ouroboros-consensus.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ouroboros-consensus-cardano.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ouroboros-consensus-diffusion.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ouroboros-consensus-protocol.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ouroboros-network.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ouroboros-network-api.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ouroboros-network-framework.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ouroboros-network-mock.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ouroboros-network-ogmios.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ouroboros-network-protocols.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.ouroboros-network-testing.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.plutus-core.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.plutus-ledger-api.components.library.pkgconfig = [[pkgs.libblst]];
+              packages.plutus-tx.components.library.pkgconfig = [[pkgs.libblst]];
+
             }) ];
           };
 
