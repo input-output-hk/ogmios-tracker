@@ -15,6 +15,7 @@
       [ "f40a8921906fecae4c52ffff34fb011457f9a771"  "sha256-lNe0uK/fH18om8mhMx9jZ2zAQT47u5zNtjU+ZXoUzBY="  "8.4.0-pre"  "sha256-aOedRHY27/Iq+tMuA5DMbqySj2BORRaFWRdPhaajExs=" ]
       [ "2b3370b53384a992a0f81795946d94fc7ce210b9"  "sha256-11WcsfT+DGx+nUmcSBNFWqLciUiIO+h5CH18wM4BBA8="  "8.5.0-pre"  "sha256-ONCnN1fLtYJB9kXDlUbF6nIjTnlqvI7kfppftrOOWAY=" ]
       [ "v6.0.0-rc3"                                "sha256-d7mPDogaA1zkeYhoUSD95Mv0HPVfJFS4jWU4q7l/KTs="  "8.5.0-pre"  "sha256-ONCnN1fLtYJB9kXDlUbF6nIjTnlqvI7kfppftrOOWAY=" ]
+      [ "6e6dec1f170986ff3fc9f252e4d8732e350946d4"  "sha256-ngYgKqblWoTwH8LjZVA2eiwulAOMV+CXslDI9JpLJG0="  "8.5.0-pre"  "sha256-ONCnN1fLtYJB9kXDlUbF6nIjTnlqvI7kfppftrOOWAY=" ]
     ];
     supportedSystems = [ "x86_64-linux" /*"aarch64-linux"*/ ];
     inherit (inputs.nixpkgs-2305) lib;
