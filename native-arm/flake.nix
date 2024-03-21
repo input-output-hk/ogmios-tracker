@@ -19,6 +19,7 @@
 
     packages.aarch64-linux = let
       system = "aarch64-linux";
+      imagePrefix = "ogmios-tracker/";
       pkgs = inputs.nixpkgs.legacyPackages.${system};
       inherit (pkgs) lib;
       enableAArch64 = { original, supportedSystemsPath, extraPatch ? "" }: let
@@ -32,13 +33,24 @@
         inherit (patched) outPath;
         inherit (original) rev shortRev lastModified lastModifiedDate;
       };
+      # Unfortunately, you can’t have slashes in image names in older Nixpkgs, so:
+      retagOCI = newName: newTag: original: pkgs.runCommand "retagged-${original.name}" {
+        buildInputs = with pkgs; [ gnutar jq ];
+      } ''
+        mkdir unpack && cd unpack
+        tar -xzf ${original}
+        chmod -R +w .
+        jq --arg new ${pkgs.lib.escapeShellArg "${newName}:${newTag}"} '.[0].RepoTags[0] = $new' manifest.json >manifest.json.new
+        mv manifest.json.new manifest.json
+        tar -czf $out .
+      '';
     in lib.listToAttrs (
 
       # ——————————————————     ogmios      —————————————————— #
 
       (let
         input = "ogmios-5-6-0";
-        #version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
+        version = builtins.replaceStrings ["refs/tags/v"] [""] (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
         patched = pkgs.runCommandNoCC "ogmios-src" {} ''
           cp -r ${inputs.${input}} $out
           chmod -R +w $out
@@ -67,8 +79,8 @@
           value = let
             pkgs = nodeFlake.legacyPackages.${system};
           in pkgs.dockerTools.buildImage {
-            name = "ogmios";
-            tag = "v5.6.0";
+            name = "${imagePrefix}ogmios";
+            tag = "v${version}";
             config = {
               ExposedPorts = {
                 "1337/tcp" = {};
@@ -101,7 +113,7 @@
 
       (let
         input = "ogmios-6-1-0";
-        #version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
+        version = builtins.replaceStrings ["refs/tags/v"] [""] (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
         patched = pkgs.runCommandNoCC "ogmios-src" {} ''
           cp -r ${inputs.${input}} $out
           chmod -R +w $out
@@ -131,8 +143,8 @@
           value = let
             pkgs = nodeFlake.legacyPackages.${system};
           in pkgs.dockerTools.buildImage {
-            name = "ogmios";
-            tag = "v5.6.0";
+            name = "${imagePrefix}ogmios";
+            tag = "v${version}";
             config = {
               ExposedPorts = {
                 "1337/tcp" = {};
@@ -165,7 +177,7 @@
 
       (let
         input = "cardano-db-sync-13-1-0-0";
-        #version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
+        version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
         theFlake = (import inputs.flake-compat {
           src = enableAArch64 {
             original = inputs.${input};
@@ -185,14 +197,14 @@
         }).defaultNix;
       in [
         # { name = "${input}--flake"; value = theFlake; }
-        { name = "${input}--oci"; value = theFlake.packages.${system}.dockerImage; }
+        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-db-sync" version theFlake.packages.${system}.dockerImage; }
       ])
 
       ++
 
       (let
         input = "cardano-db-sync-sancho-4-0-0";
-        #version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
+        version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
         theFlake = (import inputs.flake-compat {
           src = enableAArch64 {
             original = inputs.${input};
@@ -215,7 +227,7 @@
         }).defaultNix;
       in [
         # { name = "${input}--flake"; value = theFlake; }
-        { name = "${input}--oci"; value = theFlake.packages.${system}.cardano-db-sync-docker; }
+        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-db-sync" version theFlake.packages.${system}.cardano-db-sync-docker; }
       ])
 
       ++
@@ -224,7 +236,7 @@
 
       (let
         input = "cardano-node-1-35-5";
-        #version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
+        version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
         theFlake = (import inputs.flake-compat {
           src = enableAArch64 {
             original = inputs.${input};
@@ -240,15 +252,15 @@
         { name = "${input}--flake"; value = theFlake; }
         # { name = "${input}--cardano-node"; value = theFlake.packages.${system}.cardano-node; }
         # { name = "${input}--cardano-submit-api"; value = theFlake.packages.${system}.cardano-submit-api; }
-        { name = "${input}--oci"; value = theFlake.legacyPackages.${system}.dockerImage; }
-        { name = "${input}--oci-submit-api"; value = theFlake.legacyPackages.${system}.submitApiDockerImage; }
+        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
+        { name = "${input}--oci-submit-api"; value = retagOCI "${imagePrefix}cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
       ])
 
       ++
 
       (let
         input = "cardano-node-1-35-7";
-        #version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
+        version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
         theFlake = (import inputs.flake-compat {
           src = enableAArch64 {
             original = inputs.${input};
@@ -259,16 +271,15 @@
         # { name = "${input}--flake"; value = theFlake; }
         # { name = "${input}--cardano-node"; value = theFlake.packages.${system}.cardano-node; }
         # { name = "${input}--cardano-submit-api"; value = theFlake.packages.${system}.cardano-submit-api; }
-        { name = "${input}--oci"; value = theFlake.legacyPackages.${system}.dockerImage; }
-        { name = "${input}--oci-submit-api"; value = theFlake.legacyPackages.${system}.submitApiDockerImage; }
+        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
+        { name = "${input}--oci-submit-api"; value = retagOCI "${imagePrefix}cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
       ])
 
       ++
 
       (let
         input = "cardano-node-8-8-0-pre";
-        #version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
-        #theFlake = (import inputs.flake-compat { src = enableAArch64 inputs.${input} "nix/supported-systems.nix"; }).defaultNix;
+        version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
         theFlake = (import inputs.flake-compat {
           src = enableAArch64 {
             original = inputs.${input};
@@ -285,16 +296,15 @@
         { name = "${input}--flake"; value = theFlake; }
         # { name = "${input}--cardano-node"; value = theFlake.packages.${system}.cardano-node; }
         # { name = "${input}--cardano-submit-api"; value = theFlake.packages.${system}.cardano-submit-api; }
-        { name = "${input}--oci"; value = theFlake.legacyPackages.${system}.dockerImage; }
-        { name = "${input}--oci-submit-api"; value = theFlake.legacyPackages.${system}.submitApiDockerImage; }
+        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
+        { name = "${input}--oci-submit-api"; value = retagOCI "${imagePrefix}cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
       ])
 
       ++
 
       (let
         input = "cardano-node-8-9-0";
-        #version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
-        #theFlake = (import inputs.flake-compat { src = enableAArch64 inputs.${input} "nix/supported-systems.nix"; }).defaultNix;
+        version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
         theFlake = (import inputs.flake-compat {
           src = enableAArch64 {
             original = inputs.${input};
@@ -311,8 +321,8 @@
         # { name = "${input}--flake"; value = theFlake; }
         # { name = "${input}--cardano-node"; value = theFlake.packages.${system}.cardano-node; }
         # { name = "${input}--cardano-submit-api"; value = theFlake.packages.${system}.cardano-submit-api; }
-        { name = "${input}--oci"; value = theFlake.legacyPackages.${system}.dockerImage; }
-        { name = "${input}--oci-submit-api"; value = theFlake.legacyPackages.${system}.submitApiDockerImage; }
+        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
+        { name = "${input}--oci-submit-api"; value = retagOCI "${imagePrefix}cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
       ])
 
     );
