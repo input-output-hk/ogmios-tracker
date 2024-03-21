@@ -72,6 +72,12 @@
           }) ];
         };
         ogmios = project.hsPkgs.ogmios.components.exes.ogmios;
+        cardanoConfigurations = pkgs.fetchFromGitHub {
+          owner = "input-output-hk";
+          repo = "cardano-configurations";
+          rev = "c0d11b5ff0c0200da00a50c17c38d9fd752ba532";
+          hash = "sha256-oOycxAu9kARfyUvkdjeq80Em7b+vP9XsBii8836f9yQ=";
+        };
       in [
         { name = "${input}"; value = ogmios; }
         {
@@ -102,7 +108,7 @@
               name = "ogmios-env";
               paths = [ ogmios ] ++ (with pkgs; [ busybox ]);
               postBuild = ''
-                cp -r ${patched}/server/config/network $out/config
+                cp -r ${cardanoConfigurations}/network/mainnet $out/config
               '';
             };
           };
