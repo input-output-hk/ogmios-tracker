@@ -1,0 +1,26 @@
+diff --git a/nix/docker.nix b/nix/docker.nix
+index fd47673e..bb92e71c 100644
+--- a/nix/docker.nix
++++ b/nix/docker.nix
+@@ -47,12 +47,6 @@ let
+         cardano-db-tool # utilities for creating database snapshots
+       ];
+     };
+-
+-    runAsRoot = ''
+-      #!${runtimeShell}
+-      ${dockerTools.shadowSetup}
+-      mkdir -p /root
+-    '';
+   };
+ 
+   # Contains cardano-db-sync binary, but no application configuration
+@@ -68,6 +62,8 @@ let
+   # Entrypoint for the final image layer
+   entrypoint = writeScriptBin "entrypoint" ''
+     #!${runtimeShell}
++    ${dockerTools.shadowSetup}
++    mkdir -p /root
+     mkdir -p /configuration
+     if [ ! -f /configuration/pgpass ]; then
+       ${genPgpass} /run/secrets

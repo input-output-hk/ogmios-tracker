@@ -1,0 +1,25 @@
+diff --git a/nix/docker.nix b/nix/docker.nix
+index 84a4687f..292ce6e3 100644
+--- a/nix/docker.nix
++++ b/nix/docker.nix
+@@ -80,11 +80,6 @@ let
+       socat # Utility for bidirectional data transfer
+       utillinux # System utilities for Linux
+     ];
+-    runAsRoot = ''
+-      #!${runtimeShell}
+-      ${dockerTools.shadowSetup}
+-      mkdir -p /root
+-    '';
+   };
+ 
+   # The applications, without configuration, for which the target container is being built
+@@ -117,6 +112,8 @@ let
+     '';
+     entry-point = writeScriptBin "entry-point" ''
+       #!${runtimeShell}
++      ${dockerTools.shadowSetup}
++      mkdir -p /root
+       mkdir -p /configuration
+       if [ ! -f /configuration/pgpass ]
+       then

@@ -1,0 +1,9 @@
+diff --git a/server/cabal.project b/server/cabal.project
+index 19a70a45b..4228b3cc2 100644
+--- a/server/cabal.project
++++ b/server/cabal.project
+@@ -105,3 +105,4 @@ source-repository-package
+     eras/alonzo/impl
+     eras/babbage/impl
+     eras/conway/impl
++  --sha256: 0vrjfhffs5m01qkhjr2vyilwk18x96x2xg3w4r9kdil3kxj3wla3
