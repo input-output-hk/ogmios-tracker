@@ -34,6 +34,23 @@
         "type": "github"
       }
     },
+    "cardano-db-sync-sancho-4-1-0": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1710782951,
+        "narHash": "sha256-DW4Bx2iaMzqyLao6O1rak+NbgNR4bwJfFZ9mmH1W/aM=",
+        "owner": "IntersectMBO",
+        "repo": "cardano-db-sync",
+        "rev": "d249be066beb22a918ed60b4952a2370aca5a28a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IntersectMBO",
+        "ref": "sancho-4.1.0",
+        "repo": "cardano-db-sync",
+        "type": "github"
+      }
+    },
     "cardano-node-1-35-5": {
       "flake": false,
       "locked": {
@@ -176,6 +193,7 @@
       "inputs": {
         "cardano-db-sync-13-1-0-0": "cardano-db-sync-13-1-0-0",
         "cardano-db-sync-sancho-4-0-0": "cardano-db-sync-sancho-4-0-0",
+        "cardano-db-sync-sancho-4-1-0": "cardano-db-sync-sancho-4-1-0",
         "cardano-node-1-35-5": "cardano-node-1-35-5",
         "cardano-node-1-35-7": "cardano-node-1-35-7",
         "cardano-node-8-8-0-pre": "cardano-node-8-8-0-pre",

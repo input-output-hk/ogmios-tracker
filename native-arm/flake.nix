@@ -10,6 +10,7 @@
 
     cardano-db-sync-13-1-0-0 = { url = "github:IntersectMBO/cardano-db-sync/13.1.0.0"; flake = false; };
     cardano-db-sync-sancho-4-0-0 = { url = "github:IntersectMBO/cardano-db-sync/sancho-4-0-0"; flake = false; };
+    cardano-db-sync-sancho-4-1-0 = { url = "github:IntersectMBO/cardano-db-sync/sancho-4.1.0"; flake = false; };
 
     ogmios-5-6-0 = { url = "https://github.com/CardanoSolutions/ogmios.git"; ref = "refs/tags/v5.6.0"; type = "git"; submodules = true; flake = false; };
     ogmios-6-1-0 = { url = "https://github.com/CardanoSolutions/ogmios.git"; ref = "refs/tags/v6.1.0"; type = "git"; submodules = true; flake = false; };
@@ -244,6 +245,36 @@
 
       (let
         input = "cardano-db-sync-sancho-4-0-0";
+        version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
+        theFlake = (import inputs.flake-compat {
+          src = enableAArch64 {
+            original = inputs.${input};
+            supportedSystemsPath = "supported-systems.nix";
+            extraPatch = ''
+              (
+                cd $out
+                patch -p1 -i ${./cardano-db-sync-sancho-4-0-0--run-as-root.patch}
+                # <https://github.com/IntersectMBO/cardano-db-sync/pull/1660>
+                patch -p1 -i ${./cardano-db-sync-sancho-4-0-0--dont-use-cardano-parts.diff}
+                patch -p1 -i ${./cardano-db-sync-sancho-4-0-0--enable-aarch64-linux.patch}
+              )
+            '';
+          };
+          override-inputs.customConfig = { outputs = {}; } // (import inputs.flake-compat {
+            src = builtins.path {
+              path = "${inputs.${input}}/custom-config";
+            };
+          }).defaultNix;
+        }).defaultNix;
+      in [
+        # { name = "${input}--flake"; value = theFlake; }
+        { name = "${input}--oci"; value = retagOCI "cardano-db-sync" version theFlake.packages.${system}.cardano-db-sync-docker; }
+      ])
+
+      ++
+
+      (let
+        input = "cardano-db-sync-sancho-4-1-0";
         version = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.${input}.original.ref;
         theFlake = (import inputs.flake-compat {
           src = enableAArch64 {
