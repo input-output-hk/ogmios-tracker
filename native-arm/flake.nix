@@ -19,7 +19,8 @@
 
     packages.aarch64-linux = let
       system = "aarch64-linux";
-      imagePrefix = "ogmios-tracker/";
+      ghRepo = "input-output-hk/ogmios-tracker";
+      imagePrefix = "ghcr.io/${ghRepo}/";
       pkgs = inputs.nixpkgs.legacyPackages.${system};
       inherit (pkgs) lib;
       enableAArch64 = { original, supportedSystemsPath, extraPatch ? "" }: let
@@ -34,17 +35,50 @@
         inherit (original) rev shortRev lastModified lastModifiedDate;
       };
       # Unfortunately, you can’t have slashes in image names in older Nixpkgs, so:
-      retagOCI = newName: newTag: original: pkgs.runCommand "retagged-${original.name}" {
+      retagOCI = newName: newTag: original: let
+        repo = "input-output-hk/ogmios-tracker";
+        namePrefix = "ghcr.io/${repo}/";
+        source = "https://github.com/${repo}";
+        revision = inputs.self.rev or "dirty";
+      in pkgs.runCommand "retagged-${original.name}" {
         buildInputs = with pkgs; [ gnutar jq ];
       } ''
         mkdir unpack && cd unpack
         tar -xzf ${original}
         chmod -R +w .
-        jq --arg new ${pkgs.lib.escapeShellArg "${newName}:${newTag}"} '.[0].RepoTags[0] = $new' manifest.json >manifest.json.new
+
+        oldConfig=$(jq -r '.[0].Config' manifest.json)
+        jq \
+          --arg source ${pkgs.lib.escapeShellArg source} \
+          --arg revision ${pkgs.lib.escapeShellArg revision} \
+          '
+            .config.Labels."org.opencontainers.image.source" = $source
+          | .config.Labels."org.opencontainers.image.revision" = $revision
+          ' "$oldConfig" > new-config.json
+        newConfig=$(sha256sum new-config.json | cut -d' ' -f1).json
+        mv new-config.json "$newConfig"
+        rm "$oldConfig"
+
+        jq \
+          --arg newTag ${pkgs.lib.escapeShellArg "${namePrefix}${newName}:${newTag}"} \
+          --arg newConfig "$newConfig" \
+          '.[0].RepoTags[0] = $newTag | .[0].Config = $newConfig' \
+          manifest.json >manifest.json.new
         mv manifest.json.new manifest.json
+
         tar -czf $out .
       '';
     in lib.listToAttrs (
+
+      [{
+        name = "all-oci";
+        value = pkgs.linkFarm "all-oci" (lib.mapAttrs' (k: v: {
+          name = lib.replaceStrings ["--oci"] [""] k + ".tar.gz";
+          value = v;
+        }) (lib.filterAttrs (k: v: lib.hasInfix "--oci" k) inputs.self.outputs.packages.${system}));
+      }]
+
+      ++
 
       # ——————————————————     ogmios      —————————————————— #
 
@@ -84,8 +118,8 @@
           name = "${input}--oci";
           value = let
             pkgs = nodeFlake.legacyPackages.${system};
-          in pkgs.dockerTools.buildImage {
-            name = "${imagePrefix}ogmios";
+          in retagOCI "ogmios" "v${version}" (pkgs.dockerTools.buildImage {
+            name = "ogmios";
             tag = "v${version}";
             config = {
               ExposedPorts = {
@@ -111,7 +145,7 @@
                 cp -r ${cardanoConfigurations}/network/mainnet $out/config
               '';
             };
-          };
+          });
         }
       ])
 
@@ -148,8 +182,8 @@
           name = "${input}--oci";
           value = let
             pkgs = nodeFlake.legacyPackages.${system};
-          in pkgs.dockerTools.buildImage {
-            name = "${imagePrefix}ogmios";
+          in retagOCI "ogmios" "v${version}" (pkgs.dockerTools.buildImage {
+            name = "ogmios";
             tag = "v${version}";
             config = {
               ExposedPorts = {
@@ -175,7 +209,7 @@
                 cp -r ${patched}/server/config/network $out/config
               '';
             };
-          };
+          });
         }
       ])
 
@@ -203,7 +237,7 @@
         }).defaultNix;
       in [
         # { name = "${input}--flake"; value = theFlake; }
-        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-db-sync" version theFlake.packages.${system}.dockerImage; }
+        { name = "${input}--oci"; value = retagOCI "cardano-db-sync" version theFlake.packages.${system}.dockerImage; }
       ])
 
       ++
@@ -233,7 +267,7 @@
         }).defaultNix;
       in [
         # { name = "${input}--flake"; value = theFlake; }
-        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-db-sync" version theFlake.packages.${system}.cardano-db-sync-docker; }
+        { name = "${input}--oci"; value = retagOCI "cardano-db-sync" version theFlake.packages.${system}.cardano-db-sync-docker; }
       ])
 
       ++
@@ -258,8 +292,8 @@
         { name = "${input}--flake"; value = theFlake; }
         # { name = "${input}--cardano-node"; value = theFlake.packages.${system}.cardano-node; }
         # { name = "${input}--cardano-submit-api"; value = theFlake.packages.${system}.cardano-submit-api; }
-        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
-        { name = "${input}--oci-submit-api"; value = retagOCI "${imagePrefix}cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
+        { name = "${input}--oci"; value = retagOCI "cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
+        { name = "${input}--oci-submit-api"; value = retagOCI "cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
       ])
 
       ++
@@ -277,8 +311,8 @@
         # { name = "${input}--flake"; value = theFlake; }
         # { name = "${input}--cardano-node"; value = theFlake.packages.${system}.cardano-node; }
         # { name = "${input}--cardano-submit-api"; value = theFlake.packages.${system}.cardano-submit-api; }
-        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
-        { name = "${input}--oci-submit-api"; value = retagOCI "${imagePrefix}cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
+        { name = "${input}--oci"; value = retagOCI "cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
+        { name = "${input}--oci-submit-api"; value = retagOCI "cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
       ])
 
       ++
@@ -302,8 +336,8 @@
         { name = "${input}--flake"; value = theFlake; }
         # { name = "${input}--cardano-node"; value = theFlake.packages.${system}.cardano-node; }
         # { name = "${input}--cardano-submit-api"; value = theFlake.packages.${system}.cardano-submit-api; }
-        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
-        { name = "${input}--oci-submit-api"; value = retagOCI "${imagePrefix}cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
+        { name = "${input}--oci"; value = retagOCI "cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
+        { name = "${input}--oci-submit-api"; value = retagOCI "cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
       ])
 
       ++
@@ -327,8 +361,8 @@
         # { name = "${input}--flake"; value = theFlake; }
         # { name = "${input}--cardano-node"; value = theFlake.packages.${system}.cardano-node; }
         # { name = "${input}--cardano-submit-api"; value = theFlake.packages.${system}.cardano-submit-api; }
-        { name = "${input}--oci"; value = retagOCI "${imagePrefix}cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
-        { name = "${input}--oci-submit-api"; value = retagOCI "${imagePrefix}cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
+        { name = "${input}--oci"; value = retagOCI "cardano-node" version theFlake.legacyPackages.${system}.dockerImage; }
+        { name = "${input}--oci-submit-api"; value = retagOCI "cardano-submit-api" version theFlake.legacyPackages.${system}.submitApiDockerImage; }
       ])
 
     );
