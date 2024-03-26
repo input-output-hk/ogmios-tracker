@@ -1,0 +1,24 @@
+diff --git a/flake.nix b/flake.nix
+index 26f8e221..111a5965 100644
+--- a/flake.nix
++++ b/flake.nix
+@@ -33,9 +33,7 @@
+   outputs = { self, ... }@inputs:
+     let
+       supportedSystems = [
+-        "x86_64-linux"
+-        "x86_64-darwin"
+-        "aarch64-darwin"
++        "aarch64-linux"
+       ];
+     in
+       inputs.utils.lib.eachSystem supportedSystems (system:
+@@ -344,7 +342,7 @@
+ 
+             legacyPackages = pkgs;
+ 
+-            packages = lib.optionalAttrs (system == "x86_64-linux") {
++            packages = lib.optionalAttrs (system == "aarch64-linux") {
+               inherit cardano-db-sync-linux cardano-db-sync-docker;
+               inherit project;
+               default = flake.packages."cardano-db-sync:exe:cardano-db-sync";

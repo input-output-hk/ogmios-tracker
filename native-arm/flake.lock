@@ -1,0 +1,210 @@
+{
+  "nodes": {
+    "cardano-db-sync-13-1-0-0": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1670313550,
+        "narHash": "sha256-Gkn/hyK0xiDJZY1O5JEwuosMzar+IskC9xxeBts+0H4=",
+        "owner": "IntersectMBO",
+        "repo": "cardano-db-sync",
+        "rev": "1040fa9ec85fd75ce9f02dae2006170136793d02",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IntersectMBO",
+        "ref": "13.1.0.0",
+        "repo": "cardano-db-sync",
+        "type": "github"
+      }
+    },
+    "cardano-db-sync-sancho-4-0-0": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1707849791,
+        "narHash": "sha256-yG9X15beB/CrlHPrQ2daWxcODhhv/tsVUVoMUcj4X88=",
+        "owner": "IntersectMBO",
+        "repo": "cardano-db-sync",
+        "rev": "8d4351000e1f85f43aebe0c4a59a572b4291699b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IntersectMBO",
+        "ref": "sancho-4-0-0",
+        "repo": "cardano-db-sync",
+        "type": "github"
+      }
+    },
+    "cardano-db-sync-sancho-4-1-0": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1710782951,
+        "narHash": "sha256-DW4Bx2iaMzqyLao6O1rak+NbgNR4bwJfFZ9mmH1W/aM=",
+        "owner": "IntersectMBO",
+        "repo": "cardano-db-sync",
+        "rev": "d249be066beb22a918ed60b4952a2370aca5a28a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IntersectMBO",
+        "ref": "sancho-4.1.0",
+        "repo": "cardano-db-sync",
+        "type": "github"
+      }
+    },
+    "cardano-node-1-35-5": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1674789032,
+        "narHash": "sha256-LwoQejDDA9P7dbl8z3nFbEJDDim0Y7oHUOgf4EH2Xig=",
+        "owner": "IntersectMBO",
+        "repo": "cardano-node",
+        "rev": "8762a10efe3f9f97939e3cb05edaf04250456702",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IntersectMBO",
+        "ref": "1.35.5",
+        "repo": "cardano-node",
+        "type": "github"
+      }
+    },
+    "cardano-node-1-35-7": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1680029210,
+        "narHash": "sha256-iX+OoH70ZRyqeAraHIZbXQwdCPczOUdehwNQXomcUmg=",
+        "owner": "IntersectMBO",
+        "repo": "cardano-node",
+        "rev": "f0b4ac897dcbefba9fa0d247b204a24543cf55f6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IntersectMBO",
+        "ref": "1.35.7",
+        "repo": "cardano-node",
+        "type": "github"
+      }
+    },
+    "cardano-node-8-8-0-pre": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1707399758,
+        "narHash": "sha256-pWXI8dyqKQ3HncbBtd54wdHi3Pj7J5y+nybqpzMXOj4=",
+        "owner": "IntersectMBO",
+        "repo": "cardano-node",
+        "rev": "4bb2048db77d623ee6e3678618c2d8b6c4676333",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IntersectMBO",
+        "ref": "8.8.0-pre",
+        "repo": "cardano-node",
+        "type": "github"
+      }
+    },
+    "cardano-node-8-9-0": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1709733493,
+        "narHash": "sha256-chcwbks+HyImFk7FpbkC7FFmfpScMx5T7K0TzTkGAww=",
+        "owner": "IntersectMBO",
+        "repo": "cardano-node",
+        "rev": "0d98405a60d57e1c8e13406d51cce0e34356bd64",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IntersectMBO",
+        "ref": "8.9.0",
+        "repo": "cardano-node",
+        "type": "github"
+      }
+    },
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1635892615,
+        "narHash": "sha256-harGbMZr4hzat2BWBU+Y5OYXlu+fVz7E4WeQzHi5o8A=",
+        "owner": "input-output-hk",
+        "repo": "flake-compat",
+        "rev": "eca47d3377946315596da653862d341ee5341318",
+        "type": "github"
+      },
+      "original": {
+        "owner": "input-output-hk",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1710695816,
+        "narHash": "sha256-3Eh7fhEID17pv9ZxrPwCLfqXnYP006RKzSs0JptsN84=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "614b4613980a522ba49f0d194531beddbb7220d3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-23.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "ogmios-5-6-0": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1691767474,
+        "narHash": "sha256-7Hb/ZaEnnMSOPhRlx4YR+cgpZOttYEJNzHBl+RamlZM=",
+        "ref": "refs/tags/v5.6.0",
+        "rev": "54456331bb9edd22717b4afd80c250602eea72c9",
+        "revCount": 1106,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/CardanoSolutions/ogmios.git"
+      },
+      "original": {
+        "ref": "refs/tags/v5.6.0",
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/CardanoSolutions/ogmios.git"
+      }
+    },
+    "ogmios-6-1-0": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1708512517,
+        "narHash": "sha256-LlNATgZv2V0LV42vbKal1KmHsPruYdAz0hmlQTzxet4=",
+        "ref": "refs/tags/v6.1.0",
+        "rev": "31bb0eb32afce2e9da5da0162ce2b53a09c85448",
+        "revCount": 1522,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/CardanoSolutions/ogmios.git"
+      },
+      "original": {
+        "ref": "refs/tags/v6.1.0",
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/CardanoSolutions/ogmios.git"
+      }
+    },
+    "root": {
+      "inputs": {
+        "cardano-db-sync-13-1-0-0": "cardano-db-sync-13-1-0-0",
+        "cardano-db-sync-sancho-4-0-0": "cardano-db-sync-sancho-4-0-0",
+        "cardano-db-sync-sancho-4-1-0": "cardano-db-sync-sancho-4-1-0",
+        "cardano-node-1-35-5": "cardano-node-1-35-5",
+        "cardano-node-1-35-7": "cardano-node-1-35-7",
+        "cardano-node-8-8-0-pre": "cardano-node-8-8-0-pre",
+        "cardano-node-8-9-0": "cardano-node-8-9-0",
+        "flake-compat": "flake-compat",
+        "nixpkgs": "nixpkgs",
+        "ogmios-5-6-0": "ogmios-5-6-0",
+        "ogmios-6-1-0": "ogmios-6-1-0"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

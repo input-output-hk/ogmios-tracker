@@ -1,0 +1,47 @@
+diff --git a/cabal.project b/cabal.project
+index e425f968..af748559 100644
+--- a/cabal.project
++++ b/cabal.project
+@@ -84,6 +84,7 @@ source-repository-package
+   subdir:
+     cardano-git-rev
+     cardano-node
++    cardano-submit-api
+     trace-dispatcher
+     trace-forward
+     trace-resources
+diff --git a/flake.nix b/flake.nix
+index 77fe4c44..26f8e221 100644
+--- a/flake.nix
++++ b/flake.nix
+@@ -63,8 +63,10 @@
+                     };
+                 })
+ 
+-                # cardano-cli, cardano-node, and friends
+-                (_: cardanoNodePkgs)
++                (final: prev: {
++                  inherit (project.hsPkgs.cardano-node.components.exes) cardano-node;
++                  inherit (project.hsPkgs.cardano-cli.components.exes) cardano-cli;
++                })
+ 
+                 (final: prev: {
+                   # The cardano-db-sync NixOS module (nix/nixos/cardano-db-sync-service.nix)
+@@ -92,17 +94,6 @@
+               ];
+           };
+ 
+-          # Get cardano-node-pkgs from cardano-parts
+-          cardanoNodePkgs = pkgs: with pkgs;
+-            let
+-              inherit (inputs.cardano-parts.cardano-parts.pkgs.special) cardano-node-pkgs;
+-            in
+-              # cardano-parts currently only supports x86_64-linux
+-              lib.optionalAttrs (system == "x86_64-linux") {
+-                inherit (cardano-node-pkgs system)
+-                  cardano-cli cardano-node cardano-submit-api;
+-              };
+-
+           # Set up and start Postgres before running database tests
+           preCheck = ''
+             echo pre-check
